@@ -1,2 +1,2 @@
 # colorgame
-Simple RGB color guesser game made during Web Dev Bootcamp
+Simple RGB color guesser game made with HTML, CSS and vanilla JavaScript
