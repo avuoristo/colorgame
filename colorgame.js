@@ -7,6 +7,7 @@ var messageDisplay = document.querySelector("#message");
 var h1 = document.querySelector("h1");
 var resetButton = document.querySelector("#reset");
 var modeButtons = document.querySelectorAll(".mode");
+let lives = 0;
 
 init();
 
@@ -35,11 +36,12 @@ function setupModeButtons() { // vaikeustaso -button event listenerit (easy, har
 }
 
 function setupSquares() { // square button event listenerit
-        for (var i = 0; i < squares.length; i++) {
-            squares[i].addEventListener("click", function () {
-                // tallenna väri jota klikattiin
-                var clickedColor = this.style.backgroundColor;
-                // vertaa klikattua väriä pickedColoriin (oikeaan väriin)
+    for (var i = 0; i < squares.length; i++) {
+        squares[i].addEventListener("click", function () {
+            // tallenna väri jota klikattiin
+            var clickedColor = this.style.backgroundColor;
+            // vertaa klikattua väriä pickedColoriin (oikeaan väriin)
+            if (lives > 0) {
                 if (clickedColor === pickedColor) {
                     messageDisplay.textContent = "Correct!";
                     resetButton.textContent = "Play Again?";
@@ -47,13 +49,22 @@ function setupSquares() { // square button event listenerit
                     h1.style.backgroundColor = clickedColor;
                 } else {
                     this.style.backgroundColor = "#232323";
-                    messageDisplay.textContent = "Incorrect!";
+                    lives--;
+                    if (lives === 0) {
+                        messageDisplay.textContent = "Out of Lives!";
+                        resetButton.textContent = "Play Again?";
+                    } else {
+                        messageDisplay.textContent = "Incorrect! Lives left: "+lives;
+                    }
                 }
-            });
-        }
+            } 
+        });
+    }
 }
 
 function reset() {
+    // resetoi elämät. elämien määrä on ruutujen määrä jaettuna kahdella, pyöristettynä ylöspäin. Eli easy = 2, hard = 3.
+    lives = Math.ceil(numSquares / 2);
     // luo uudet värit 
     colors = generateRandomColors(numSquares);
     // valitse uusi sattumanvarainen väri taulukosta
@@ -63,7 +74,7 @@ function reset() {
     // vaihda resetButtonin teksti
     resetButton.textContent = "New Colors";
     // tyhjennä #message 'n sisältö
-    messageDisplay.textContent = "";
+    messageDisplay.textContent = "Lives left: "+lives;
     // vaihda h1 taustaväri alkuperäiseksi
     h1.style.backgroundColor = "steelblue";
     // vaihda ruutujen väri, ja mikäli easy mode päällä, piilota 3 viimeistä ruutua
